@@ -171,12 +171,14 @@ val mapper = jsonMapper {
 	addModule(JavaTimeModule())
 }
 
+private const val takaoRefTag = " (by TakaoTwitchShotBot)"
+
 private val base64Decoder = Base64.getDecoder()
 const val twitchBaseUrl = "https://www.twitch.tv/"
 
 fun ChannelMessageEvent.publishSOMessage(user: EventUser, gameName: String) {
 	twitchChat.sendMessage(
 		channel.name,
-		soMessage.format(user.name, gameName, twitchBaseUrl + user.name)
+		soMessage.format(user.name, gameName, twitchBaseUrl + user.name) + takaoRefTag
 	)
 }
