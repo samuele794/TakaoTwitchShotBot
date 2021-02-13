@@ -23,6 +23,8 @@ class TakaoTwitchClient {
 	lateinit var twitchClient: TwitchClient
 
 	suspend fun initConfig() = withContext(Dispatchers.IO) {
+		Costant.logger.info("Caricamento config Twitch")
+
 		val configFile = File("./config.json")
 
 		val configJSON = if (configFile.exists()) {
@@ -30,6 +32,8 @@ class TakaoTwitchClient {
 		} else {
 			ConfigurationDTO::class.java.classLoader.getResource("config.json").readText()
 		}
+
+		Costant.logger.info("Configurazione caricata: $configJSON")
 
 		jacksonObjectMapper()
 			.readValue(
@@ -46,6 +50,8 @@ class TakaoTwitchClient {
 
 
 	suspend fun initClient() = withContext(Dispatchers.IO) {
+		Costant.logger.info("Inizializzazione twitch client")
+
 		val oAuthCredential =
 			OAuth2Credential("twitch", Costant.base64Decoder.decode(oAuth2ChatKey).toString(Charsets.UTF_8))
 

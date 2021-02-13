@@ -1,5 +1,6 @@
 package botscript.client
 
+import botscript.Costant
 import botscript.dto.StreamerDTO
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import kotlinx.coroutines.Dispatchers
@@ -15,9 +16,12 @@ class StreamersClient {
 	private var communityStreamer: List<String>? = null
 
 	suspend fun getStreamers(): List<String> = withContext(Dispatchers.IO) {
-
-		if (communityStreamer != null)
+		if (communityStreamer != null) {
+			Costant.logger.info("Recupero Lista Streamer da cache")
 			return@withContext communityStreamer!!
+		}
+
+		Costant.logger.info("Inizio Recupero Streamers da remoto")
 
 		val httpClient = HttpClient.newHttpClient()
 
@@ -29,9 +33,12 @@ class StreamersClient {
 
 		val result = runCatching {
 			httpClient.send(requestStreamerList, HttpResponse.BodyHandlers.ofString())
+		}.onFailure {
+			Costant.logger.error("Errore Recupero streamers remoto", it)
 		}.getOrNull()
 
 		if (result == null) {
+			Costant.logger.error("Recupero Streamers da remoto fallito, passaggio a lista locale")
 			communityStreamer = jacksonObjectMapper()
 				.readValue(
 					StreamerDTO::class.java.classLoader.getResource("streamers.json").readText(),
@@ -39,6 +46,8 @@ class StreamersClient {
 				).communityStreamers
 			communityStreamer!!
 		} else {
+			Costant.logger.info("Recupero Streamers da remoto completato con successo")
+			Costant.logger.info("Streamers da remoto: ${result.body()}")
 			communityStreamer =
 				jacksonObjectMapper().readValue(result.body(), StreamerDTO::class.java).communityStreamers
 			communityStreamer!!
