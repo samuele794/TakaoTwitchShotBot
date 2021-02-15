@@ -11,14 +11,11 @@ import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.Instant
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
+import java.time.format.FormatStyle
+import java.util.*
 import kotlin.system.exitProcess
-
-//https://twitch4j.github.io/docs/getting-started/
-
-//https://dev.twitch.tv/docs/api/reference#get-streams
-
 
 val streamerClient = StreamersClient()
 
@@ -44,7 +41,7 @@ fun main() {
 				.find { streamer -> streamer.username == it.user.name }
 				?.let { streamer ->
 					if (streamer.cdSoTime == null || streamer.cdSoTime?.isBefore(Instant.now()) == true) {
-						streamer.cdSoTime = Instant.now().plus(1, ChronoUnit.HOURS)
+						streamer.cdSoTime = Instant.now().plus(takaoTwitchClient.durationCooldownSo)
 						val userResult =
 							takaoTwitchClient.twitchClient.helix.getChannelInformation(null, listOf(it.user.id))
 								.execute()
@@ -92,14 +89,19 @@ fun main() {
 							streamersActive.forEach {
 								addRow(
 									it.username,
-									if (it.cdSoTime != null) DateTimeFormatter.ISO_INSTANT.format(it.cdSoTime) else it.cdSoTime.toString()
+									if (it.cdSoTime != null) DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL)
+										.withLocale(Locale.getDefault())
+										.withZone(ZoneId.systemDefault())
+										.format(it.cdSoTime)
+									else
+										it.cdSoTime.toString()
 								)
 							}
 							addRule()
 							setPadding(2)
 
 							setTextAlignment(TextAlignment.CENTER)
-							println(render(50))
+							println(render(100))
 						}
 					}
 					else -> {

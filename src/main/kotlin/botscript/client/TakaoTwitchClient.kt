@@ -9,16 +9,18 @@ import com.github.twitch4j.TwitchClientBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.time.Duration
 
 class TakaoTwitchClient {
 
-	//Link generazione token https://twitchtokengenerator.com/
 	lateinit var oAuth2ChatKey: String
 	lateinit var channelName: String
 
 	lateinit var clientId: String
 	lateinit var clientSecret: String
 	lateinit var soMessage: String
+
+	lateinit var durationCooldownSo: Duration
 
 	lateinit var twitchClient: TwitchClient
 
@@ -45,6 +47,7 @@ class TakaoTwitchClient {
 				clientId = it.applicationId
 				clientSecret = it.applicationSecret
 				soMessage = it.soMessage
+				durationCooldownSo = it.getTimeAsRealValue()
 			}
 	}
 
