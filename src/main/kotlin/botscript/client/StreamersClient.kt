@@ -56,7 +56,7 @@ class StreamersClient {
 
 	companion object {
 		private const val streamerJSONLink =
-			"https://gist.githubusercontent.com/samuele794/a22ab3864081b0275256aa9403e67a35/raw/1ecb7d198616c4d654a4892fd82d01e6d3f61e50/streamers.json"
+			"https://gist.githubusercontent.com/samuele794/a22ab3864081b0275256aa9403e67a35/raw/streamers.json"
 
 	}
 }
