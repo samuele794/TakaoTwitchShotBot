@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "it.github.samuele794.twitch"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
 repositories {
 	mavenCentral()
@@ -33,6 +33,10 @@ tasks.register<Jar>("uberJar") {
 		)
 	}
 	from(sourceSets.main.get().output)
+
+	exclude {
+		it.name == "config.json"
+	}
 
 	dependsOn(configurations.runtimeClasspath)
 
