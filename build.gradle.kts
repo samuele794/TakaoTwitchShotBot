@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
 	kotlin("jvm") version "1.4.30"
+	id("edu.sc.seis.launch4j") version "2.4.9"
 }
 
 group = "it.github.samuele794.twitch"
@@ -47,4 +48,12 @@ tasks.test {
 
 tasks.withType<KotlinCompile>() {
 	kotlinOptions.jvmTarget = "1.8"
+}
+
+launch4j {
+	mainClassName = "botscript.MainBotKt"
+	icon = "${projectDir}/icon/appIcon.ico"
+	headerType= "console"
+	dontWrapJar = true
+	jar = "${projectDir}/build/libs/BotSo-${version}.jar"
 }
